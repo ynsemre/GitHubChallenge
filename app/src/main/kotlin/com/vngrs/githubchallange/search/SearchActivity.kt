@@ -78,7 +78,7 @@ class SearchActivity : AppCompatActivity(),
     }
 
     private fun showRepository(repository: Repository) {
-        //TODO: redirect to repository screen when implemented Repository screen
+        startActivity(RepositoryActivity.newIntent(this, repository))
     }
 
     private fun initScrollListener() {
