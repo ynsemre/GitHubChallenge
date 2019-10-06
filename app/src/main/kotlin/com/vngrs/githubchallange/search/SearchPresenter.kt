@@ -15,7 +15,7 @@ class SearchPresenter(
     private var dataSource: SearchDataSource
 ) : SearchContract.PresenterInterface {
 
-    private val TAG = "SearchPresenter"
+    private val TAG = SearchPresenter::class.java.simpleName
     private val compositeDisposable = CompositeDisposable()
 
     val observer: DisposableObserver<SearchResponse>

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vngrs.githubchallange.R
 import com.vngrs.githubchallange.model.Repository
 import com.vngrs.githubchallange.model.SearchDataSource
+import com.vngrs.githubchallange.profile.ProfileActivity
 import com.vngrs.githubchallange.repository.RepositoryActivity
 
 class SearchActivity : AppCompatActivity(),
@@ -74,7 +75,7 @@ class SearchActivity : AppCompatActivity(),
     }
 
     private fun showProfile(userName: String) {
-        //TODO: redirect to user profile screen when implemented Profile screen
+        startActivity(ProfileActivity.newIntent(this, userName))
     }
 
     private fun showRepository(repository: Repository) {

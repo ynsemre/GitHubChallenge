@@ -8,6 +8,7 @@ import com.vngrs.githubchallange.model.Repository
 import androidx.databinding.DataBindingUtil
 import com.vngrs.githubchallange.R
 import com.vngrs.githubchallange.databinding.ActivityRepositoryBinding
+import com.vngrs.githubchallange.profile.ProfileActivity
 
 class RepositoryActivity : AppCompatActivity(), RepositoryContract.ViewInterface {
 
@@ -34,7 +35,7 @@ class RepositoryActivity : AppCompatActivity(), RepositoryContract.ViewInterface
     }
 
     override fun showProfile() {
-        //TODO: redirect to user profile screen when implemented Profile screen
+        startActivity(ProfileActivity.newIntent(this, repository.owner.login))
     }
 
     companion object {
