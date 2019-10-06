@@ -1,5 +1,7 @@
 package com.vngrs.githubchallange.search
 
+import com.vngrs.githubchallange.model.SearchItem
+
 class SearchContract {
 
     interface PresenterInterface {
@@ -7,6 +9,8 @@ class SearchContract {
         fun stop()
     }
     interface ViewInterface {
-        //TODO: add interface methods for View
+        fun displaySearchResults(searchItemList: List<SearchItem>?)
+        fun displayMessage(message: String)
+        fun displayError(errorMessage: String)
     }
 }

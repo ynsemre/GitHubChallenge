@@ -22,11 +22,11 @@ class SearchPresenter(
         get() = object : DisposableObserver<SearchResponse>() {
 
             override fun onNext(@NonNull searchResponse: SearchResponse) {
-                Log.d(TAG, "Total Repo Count: " + searchResponse.totalCount)
+                viewInterface.displaySearchResults(searchResponse.items)
             }
 
             override fun onError(@NonNull e: Throwable) {
-                Log.e(TAG,"Error", e)
+                viewInterface.displayError("Error fetching search data.")
             }
 
             override fun onComplete() {

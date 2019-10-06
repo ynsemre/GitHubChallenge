@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">GitHub Challenge</string>
-
-    <string name="search_repositories_hint">Search Repositories</string>
 </resources>

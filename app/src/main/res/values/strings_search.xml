@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="search_repositories_hint">Search Repositories</string>
+
+    <string name="search_repositories_owner">Owner: %1$s</string>
+    <string name="search_repositories_repository">Repository: %1$s</string>
+
+</resources>
