@@ -9,12 +9,13 @@ buildscript {
 
         //App dep
         appcompat           = "1.1.0"
+        material            = "1.1.0-alpha10"
         corektx             = "1.1.0"
         rxjava2             = "2.2.13"
         rxandroid           = "2.1.1"
         retrofit            = "2.6.2"
         gson_converter      = "2.6.2"
-        picasso             = "2.71828"
+        fresco              = "2.0.0"
     }
     repositories {
         google()
