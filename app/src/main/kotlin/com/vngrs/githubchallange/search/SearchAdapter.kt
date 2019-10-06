@@ -3,14 +3,18 @@ package com.vngrs.githubchallange.search
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.vngrs.githubchallange.R
 import com.vngrs.githubchallange.model.SearchItem
 
-class SearchAdapter(private val searchItemList: List<SearchItem>) :
-    RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
+class SearchAdapter(
+    private val searchItemList: List<SearchItem>,
+    private val avatarClickAction: (String) -> Unit,
+    private val repositoryInfoClickAction: (String) -> Unit
+) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SearchViewHolder(
@@ -47,11 +51,21 @@ class SearchAdapter(private val searchItemList: List<SearchItem>) :
         var avatarDraweeView: SimpleDraweeView =
             itemView.findViewById(R.id.item_search_repositories_avatar_draweeview)
 
+        var infoLinearLayout: LinearLayout =
+            itemView.findViewById(R.id.item_search_repositories_info_container)
+
         var ownerNameTextView: TextView =
             itemView.findViewById(R.id.item_search_owner_name_textview)
 
         var repositoryNameTextView: TextView =
             itemView.findViewById(R.id.item_search_repository_name_textview)
+
+        init {
+            val userName = searchItemList[adapterPosition].owner!!.login!!
+            avatarDraweeView.setOnClickListener { avatarClickAction(userName) }
+
+            infoLinearLayout.setOnClickListener { repositoryInfoClickAction(userName) }
+        }
 
     }
 

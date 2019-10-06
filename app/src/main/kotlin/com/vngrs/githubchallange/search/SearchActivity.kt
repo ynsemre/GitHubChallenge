@@ -66,8 +66,18 @@ class SearchActivity : AppCompatActivity(),
     private fun initUserInterface() {
         searchRepositoriesRecyclerView =
             findViewById(R.id.activity_search_repositories_recyclerview)
-        searchRepositoriesAdapter = SearchAdapter(searchItemList)
+        searchRepositoriesAdapter = SearchAdapter(searchItemList,
+            avatarClickAction = { showProfile(it) },
+            repositoryInfoClickAction = { showRepository(it) })
         searchRepositoriesRecyclerView.adapter = searchRepositoriesAdapter
+    }
+
+    private fun showProfile(userName: String) {
+        //TODO: redirect to user profile screen when implemented Profile screen
+    }
+
+    private fun showRepository(userName: String) {
+        //TODO: redirect to repository screen when implemented Repository screen
     }
 
     private fun initScrollListener() {
