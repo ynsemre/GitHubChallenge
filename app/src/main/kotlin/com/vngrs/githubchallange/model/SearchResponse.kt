@@ -13,6 +13,6 @@ class SearchResponse {
     var incompleteResults: Boolean? = null
     @SerializedName("items")
     @Expose
-    var items: List<SearchItem>? = null
+    var items: List<Repository>? = null
 
 }

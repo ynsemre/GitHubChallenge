@@ -1,6 +1,6 @@
 package com.vngrs.githubchallange.search
 
-import com.vngrs.githubchallange.model.SearchItem
+import com.vngrs.githubchallange.model.Repository
 
 class SearchContract {
 
@@ -9,7 +9,7 @@ class SearchContract {
         fun stop()
     }
     interface ViewInterface {
-        fun displaySearchResults(searchItemList: List<SearchItem>?)
+        fun displaySearchResults(repositoryList: List<Repository>?)
         fun displayMessage(message: String)
         fun displayError(errorMessage: String)
     }

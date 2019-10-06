@@ -8,8 +8,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vngrs.githubchallange.R
+import com.vngrs.githubchallange.model.Repository
 import com.vngrs.githubchallange.model.SearchDataSource
-import com.vngrs.githubchallange.model.SearchItem
+import com.vngrs.githubchallange.repository.RepositoryActivity
 
 class SearchActivity : AppCompatActivity(),
     SearchContract.ViewInterface,
@@ -20,7 +21,7 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var searchRepositoriesRecyclerView: RecyclerView
     private lateinit var searchRepositoriesAdapter: SearchAdapter
 
-    private var searchItemList = mutableListOf<SearchItem>()
+    private var searchItemList = mutableListOf<Repository>()
     private var page = 1
     private lateinit var searchQuery: String
     private var isLoading: Boolean = false
@@ -76,7 +77,7 @@ class SearchActivity : AppCompatActivity(),
         //TODO: redirect to user profile screen when implemented Profile screen
     }
 
-    private fun showRepository(userName: String) {
+    private fun showRepository(repository: Repository) {
         //TODO: redirect to repository screen when implemented Repository screen
     }
 
@@ -99,11 +100,11 @@ class SearchActivity : AppCompatActivity(),
         })
     }
 
-    override fun displaySearchResults(searchItemList: List<SearchItem>?) {
+    override fun displaySearchResults(repositoryList: List<Repository>?) {
         if (page == 1) {
             this.searchItemList.clear()
         }
-        searchItemList?.let {
+        repositoryList?.let {
             this.searchItemList.addAll(it)
             searchRepositoriesAdapter.notifyDataSetChanged()
             isLoading = false
