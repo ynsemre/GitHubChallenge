@@ -13,6 +13,10 @@ import com.vngrs.githubchallange.model.SearchDataSource
 import com.vngrs.githubchallange.profile.ProfileActivity
 import com.vngrs.githubchallange.repository.RepositoryActivity
 
+private const val KEY_PAGE = "KEY_PAGE"
+private const val KEY_QUERY = "KEY_QUERY"
+private const val KEY_SEARCH_ITEM_LIST = "KEY_SEARCH_ITEM_LIST"
+
 class SearchActivity : AppCompatActivity(),
     SearchContract.ViewInterface,
     SearchView.OnQueryTextListener {
@@ -21,10 +25,11 @@ class SearchActivity : AppCompatActivity(),
 
     private lateinit var searchRepositoriesRecyclerView: RecyclerView
     private lateinit var searchRepositoriesAdapter: SearchAdapter
+    private lateinit var searchView: SearchView
 
     private var searchItemList = mutableListOf<Repository>()
     private var page = 1
-    private lateinit var searchQuery: String
+    private var searchQuery: String? = null
     private var isLoading: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +37,16 @@ class SearchActivity : AppCompatActivity(),
         setContentView(R.layout.activity_search)
 
         setupPresenter()
+        initData(savedInstanceState)
         initUserInterface()
         initScrollListener()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(KEY_PAGE, page)
+        outState.putParcelableArrayList(KEY_SEARCH_ITEM_LIST, ArrayList(searchItemList))
+        outState.putString(KEY_QUERY, searchQuery)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -41,7 +54,7 @@ class SearchActivity : AppCompatActivity(),
         inflater.inflate(R.menu.menu_search, menu)
 
         val searchMenuItem = menu.findItem(R.id.menu_item_search)
-        val searchView = searchMenuItem.actionView as SearchView
+        searchView = searchMenuItem.actionView as SearchView
 
         with(searchView) {
             queryHint = resources.getString(R.string.search_repositories_hint)
@@ -50,7 +63,10 @@ class SearchActivity : AppCompatActivity(),
 
             setIconifiedByDefault(false)
             isFocusable = true
-            requestFocus()
+
+            if (!searchQuery.isNullOrEmpty()) {
+                setQuery(searchQuery, false)
+            }
         }
 
         return true
@@ -63,6 +79,18 @@ class SearchActivity : AppCompatActivity(),
 
     private fun setupPresenter() {
         searchPresenter = SearchPresenter(this, SearchDataSource())
+    }
+
+    private fun initData(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getParcelableArrayList<Repository>(
+                    KEY_SEARCH_ITEM_LIST) == null
+            ) return
+            page = savedInstanceState.getInt(KEY_PAGE)
+            searchQuery = savedInstanceState.getString(KEY_QUERY)!!
+            searchItemList = savedInstanceState.getParcelableArrayList<Repository>(
+                KEY_SEARCH_ITEM_LIST)!!
+        }
     }
 
     private fun initUserInterface() {
@@ -93,7 +121,7 @@ class SearchActivity : AppCompatActivity(),
                 if (!isLoading) {
                     if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == searchItemList.size - 1) {
                         val pageCount = page + 1
-                        searchPresenter.getSearchResults(searchQuery, pageCount.toString())
+                        searchPresenter.getSearchResults(searchQuery!!, pageCount.toString())
                         isLoading = true
                     }
                 }
