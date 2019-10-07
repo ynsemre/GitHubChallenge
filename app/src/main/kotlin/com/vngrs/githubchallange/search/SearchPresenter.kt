@@ -26,7 +26,7 @@ class SearchPresenter(
             }
 
             override fun onError(@NonNull e: Throwable) {
-                viewInterface.displayError("Error fetching search data.")
+                viewInterface.displayError("Error fetching search data")
             }
 
             override fun onComplete() {
