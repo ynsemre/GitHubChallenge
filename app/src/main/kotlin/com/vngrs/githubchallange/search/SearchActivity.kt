@@ -83,13 +83,13 @@ class SearchActivity : AppCompatActivity(),
 
     private fun initData(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            if (savedInstanceState.getParcelableArrayList<Repository>(
-                    KEY_SEARCH_ITEM_LIST) == null
-            ) return
-            page = savedInstanceState.getInt(KEY_PAGE)
-            searchQuery = savedInstanceState.getString(KEY_QUERY)!!
-            searchItemList = savedInstanceState.getParcelableArrayList<Repository>(
-                KEY_SEARCH_ITEM_LIST)!!
+            if (!savedInstanceState.getString(KEY_QUERY).isNullOrEmpty()) {
+                page = savedInstanceState.getInt(KEY_PAGE)
+                searchQuery = savedInstanceState.getString(KEY_QUERY)!!
+                searchItemList = savedInstanceState.getParcelableArrayList<Repository>(
+                    KEY_SEARCH_ITEM_LIST)!!
+            }
+            return
         }
     }
 
