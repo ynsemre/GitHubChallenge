@@ -87,7 +87,8 @@ class SearchActivity : AppCompatActivity(),
                 page = savedInstanceState.getInt(KEY_PAGE)
                 searchQuery = savedInstanceState.getString(KEY_QUERY)!!
                 searchItemList = savedInstanceState.getParcelableArrayList<Repository>(
-                    KEY_SEARCH_ITEM_LIST)!!
+                    KEY_SEARCH_ITEM_LIST
+                )!!
             }
             return
         }
@@ -110,7 +111,7 @@ class SearchActivity : AppCompatActivity(),
 
                 val linearLayoutManager =
                     searchRepositoriesRecyclerView.layoutManager as LinearLayoutManager
-                if (!isLoading) {
+                if (!isLoading && !searchItemList.isNullOrEmpty()) {
                     if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == searchItemList.size - 1) {
                         val pageCount = page + 1
                         searchPresenter.getSearchResults(searchQuery!!, pageCount.toString())
@@ -119,14 +120,6 @@ class SearchActivity : AppCompatActivity(),
                 }
             }
         })
-    }
-
-    private fun showProfile(userName: String) {
-        startActivity(ProfileActivity.newIntent(this, userName))
-    }
-
-    private fun showRepository(repository: Repository) {
-        startActivity(RepositoryActivity.newIntent(this, repository))
     }
 
     override fun displaySearchResults(repositoryList: List<Repository>?) {
@@ -151,6 +144,10 @@ class SearchActivity : AppCompatActivity(),
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText.isNullOrEmpty()) {
+            clearSearchResults()
+        }
+
         return false
     }
 
@@ -159,5 +156,21 @@ class SearchActivity : AppCompatActivity(),
         this.page = 1
         searchPresenter.getSearchResults(query, page.toString())
         return false
+    }
+
+    private fun showProfile(userName: String) {
+        startActivity(ProfileActivity.newIntent(this, userName))
+    }
+
+    private fun showRepository(repository: Repository) {
+        startActivity(RepositoryActivity.newIntent(this, repository))
+    }
+
+    private fun clearSearchResults() {
+        searchItemList.clear()
+        page = 1
+        searchQuery = null
+        isLoading = false
+        searchRepositoriesAdapter.notifyDataSetChanged()
     }
 }
