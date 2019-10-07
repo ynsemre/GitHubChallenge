@@ -75,4 +75,8 @@ class ProfilePresenter(
         compositeDisposable.add(repositoriesResultDisposable)
     }
 
+    override fun stop() {
+        compositeDisposable.clear()
+    }
+
 }

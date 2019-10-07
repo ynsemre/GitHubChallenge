@@ -8,6 +8,7 @@ class ProfileContract {
     interface PresenterInterface {
         fun getProfileResult(username: String)
         fun getRepositoriesResult(username: String, page: String)
+        fun stop()
     }
 
     interface ViewInterface {

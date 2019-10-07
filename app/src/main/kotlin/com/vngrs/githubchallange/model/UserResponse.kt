@@ -1,36 +1,18 @@
 package com.vngrs.githubchallange.model
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
-class UserResponse {
-
-    @SerializedName("login")
-    @Expose
-    var login: String? = null
-    @SerializedName("avatar_url")
-    @Expose
-    var avatarUrl: String? = null
-    @SerializedName("type")
-    @Expose
-    var type: String? = null
-    @SerializedName("name")
-    @Expose
-    var name: String? = null
-    @SerializedName("company")
-    @Expose
-    var company: String? = null
-    @SerializedName("blog")
-    @Expose
-    var blog: String? = null
-    @SerializedName("location")
-    @Expose
-    var location: String? = null
-    @SerializedName("email")
-    @Expose
-    var email: String? = null
-    @SerializedName("public_repos")
-    @Expose
-    var publicRepos: Int = 0
-
-}
+@Parcelize
+class UserResponse(
+    @SerializedName("login") var login: String? = null,
+    @SerializedName("avatar_url") var avatarUrl: String? = null,
+    @SerializedName("type") var type: String? = null,
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("company") var company: String? = null,
+    @SerializedName("blog") var blog: String? = null,
+    @SerializedName("location") var location: String? = null,
+    @SerializedName("email") var email: String? = null,
+    @SerializedName("public_repos") var publicRepos: Int = 0
+) : Parcelable

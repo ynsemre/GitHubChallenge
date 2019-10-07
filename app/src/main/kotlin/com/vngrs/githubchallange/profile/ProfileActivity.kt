@@ -39,15 +39,48 @@ class ProfileActivity : AppCompatActivity(),
         setupPresenter()
         initUserInterface()
         initScrollListener()
+
+        if (savedInstanceState != null) {
+            initData(savedInstanceState)
+
+        } else {
+            profilePresenter.getProfileResult(username)
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        profilePresenter.getProfileResult(username)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList(KEY_REPOSITORY_LIST, ArrayList(repositoriesList))
+        outState.putInt(KEY_REPOSITORY_COUNT, repositoryCount)
+        outState.putString(KEY_USERNAME, username)
+        outState.putInt(KEY_PAGE, page)
+        outState.putParcelable(KEY_USER, user)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        profilePresenter.stop()
     }
 
     private fun setupPresenter() {
         profilePresenter = ProfilePresenter(this, ProfileDataSource())
+    }
+
+    private fun initData(savedInstanceState: Bundle) {
+        if (savedInstanceState.getParcelable<UserResponse>(
+                KEY_USER
+            ) == null
+        ) return
+        page = savedInstanceState.getInt(KEY_PAGE)
+        repositoryCount = savedInstanceState.getInt(KEY_REPOSITORY_COUNT)
+        username = savedInstanceState.getString(KEY_USERNAME)!!
+        user = savedInstanceState.getParcelable(KEY_USER)!!
+        repositoriesList = savedInstanceState.getParcelableArrayList<Repository>(
+            KEY_REPOSITORY_LIST
+        )!!
+
+        profileAdapter = ProfileAdapter(user, repositoriesList)
+        profileRecyclerView.adapter = profileAdapter
     }
 
     private fun initUserInterface() {
@@ -113,7 +146,11 @@ class ProfileActivity : AppCompatActivity(),
     }
 
     companion object {
+        private const val KEY_REPOSITORY_COUNT = "KEY_REPOSITORY_COUNT"
+        private const val KEY_REPOSITORY_LIST = "KEY_REPOSITORY_LIST"
         private const val KEY_USERNAME = "KEY_USERNAME"
+        private const val KEY_USER = "KEY_USER"
+        private const val KEY_PAGE = "KEY_PAGE"
 
         fun newIntent(context: Context, username: String): Intent {
             return Intent(context, ProfileActivity::class.java).apply {
