@@ -23,7 +23,7 @@ class RepositoryActivity : AppCompatActivity(), RepositoryContract.ViewInterface
         repositoryPresenter = RepositoryPresenter(this)
 
         //Set repository name as a Toolbar title.
-        title = repository.name
+        supportActionBar?.title = repository.name
 
         val binding = DataBindingUtil
             .setContentView<ActivityRepositoryBinding>(
