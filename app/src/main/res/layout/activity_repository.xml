@@ -28,9 +28,9 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
+                android:onClick="@{() -> presenter.showProfile()}"
                 app:imageUri="@{repository.owner.avatarUrl}"
-                app:roundAsCircle="true"
-                android:onClick="@{() -> presenter.showProfile()}"/>
+                app:roundAsCircle="true" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -43,7 +43,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_standart"
+                android:layout_marginEnd="@dimen/spacing_small"
                 android:gravity="center"
                 android:text="@{repository.description}" />
 
