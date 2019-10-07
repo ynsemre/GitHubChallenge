@@ -3,9 +3,11 @@ package com.vngrs.githubchallange.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vngrs.githubchallange.R
 import com.vngrs.githubchallange.model.ProfileDataSource
@@ -21,8 +23,11 @@ class ProfileActivity : AppCompatActivity(),
     private lateinit var profileAdapter: ProfileAdapter
 
     private lateinit var user: UserResponse
-    private var repositoriesList = mutableListOf<Repository>()
     private lateinit var username: String
+
+    private var repositoriesList = mutableListOf<Repository>()
+    private var isLoading: Boolean = false
+    private var repositoryCount: Int = 0
     private var page = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +38,7 @@ class ProfileActivity : AppCompatActivity(),
 
         setupPresenter()
         initUserInterface()
+        initScrollListener()
     }
 
     override fun onStart() {
@@ -47,19 +53,46 @@ class ProfileActivity : AppCompatActivity(),
     private fun initUserInterface() {
         profileRecyclerView = findViewById(R.id.activity_profile_recyclerview)
         val dividerItemDecoration = DividerItemDecoration(this, VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.profile_item_divider, null))
+        dividerItemDecoration.setDrawable(
+            resources.getDrawable(
+                R.drawable.profile_item_divider,
+                null
+            )
+        )
         profileRecyclerView.addItemDecoration(dividerItemDecoration)
+    }
+
+    private fun initScrollListener() {
+        profileRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val linearLayoutManager =
+                    profileRecyclerView.layoutManager as LinearLayoutManager
+
+                if (!isLoading && repositoriesList.size < repositoryCount
+                    && linearLayoutManager
+                        .findLastCompletelyVisibleItemPosition() == repositoriesList.size
+                ) {
+                    val pageCount = page + 1
+                    profilePresenter.getRepositoriesResult(username, pageCount.toString())
+                    isLoading = true
+                }
+            }
+        })
     }
 
     override fun displayProfileResult(userResponse: UserResponse) {
         this.user = userResponse
+        this.repositoryCount = userResponse.publicRepos
         if (page == 1) {
             profilePresenter.getRepositoriesResult(username, page.toString())
         }
     }
 
     override fun displayRepositoriesResult(repositoryList: List<Repository>) {
-        page++
+
         if (repositoriesList.isNullOrEmpty()) {
             repositoriesList.addAll(repositoryList)
             profileAdapter = ProfileAdapter(user, repositoriesList)
@@ -69,6 +102,14 @@ class ProfileActivity : AppCompatActivity(),
 
         repositoriesList.addAll(repositoryList)
         profileAdapter.notifyDataSetChanged()
+
+        page++
+        isLoading = false
+    }
+
+    override fun displayError(errorMessage: String) {
+        isLoading = false
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
     }
 
     companion object {

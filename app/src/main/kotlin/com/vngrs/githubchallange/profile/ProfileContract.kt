@@ -13,6 +13,7 @@ class ProfileContract {
     interface ViewInterface {
         fun displayProfileResult(userResponse: UserResponse)
         fun displayRepositoriesResult(repositoryList: List<Repository>)
+        fun displayError(errorMessage: String)
     }
 
 }

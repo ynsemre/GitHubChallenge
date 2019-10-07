@@ -27,7 +27,7 @@ class ProfilePresenter(
             }
 
             override fun onError(e: Throwable) {
-                Log.d(TAG, "Error")
+                viewInterface.displayError("Error occured when loading user info")
             }
 
             override fun onComplete() {
@@ -43,7 +43,7 @@ class ProfilePresenter(
             }
 
             override fun onError(e: Throwable) {
-                Log.d(TAG, "Error")
+                viewInterface.displayError("Error occured when loading repositories")
             }
 
             override fun onComplete() {

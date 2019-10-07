@@ -102,14 +102,6 @@ class SearchActivity : AppCompatActivity(),
         searchRepositoriesRecyclerView.adapter = searchRepositoriesAdapter
     }
 
-    private fun showProfile(userName: String) {
-        startActivity(ProfileActivity.newIntent(this, userName))
-    }
-
-    private fun showRepository(repository: Repository) {
-        startActivity(RepositoryActivity.newIntent(this, repository))
-    }
-
     private fun initScrollListener() {
         searchRepositoriesRecyclerView.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {
@@ -127,6 +119,14 @@ class SearchActivity : AppCompatActivity(),
                 }
             }
         })
+    }
+
+    private fun showProfile(userName: String) {
+        startActivity(ProfileActivity.newIntent(this, userName))
+    }
+
+    private fun showRepository(repository: Repository) {
+        startActivity(RepositoryActivity.newIntent(this, repository))
     }
 
     override fun displaySearchResults(repositoryList: List<Repository>?) {

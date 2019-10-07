@@ -29,5 +29,8 @@ class UserResponse {
     @SerializedName("email")
     @Expose
     var email: String? = null
+    @SerializedName("public_repos")
+    @Expose
+    var publicRepos: Int = 0
 
 }
