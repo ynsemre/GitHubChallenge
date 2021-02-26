@@ -11,7 +11,7 @@ import com.vngrs.githubchallange.R
 import com.vngrs.githubchallange.model.Repository
 
 class SearchAdapter(
-    private val repositoryList: List<Repository>,
+    var repositoryList: List<Repository>,
     private val avatarClickAction: (String) -> Unit,
     private val repositoryInfoClickAction: (Repository) -> Unit
 ) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {

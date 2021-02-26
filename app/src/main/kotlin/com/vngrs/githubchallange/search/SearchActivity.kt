@@ -27,11 +27,6 @@ class SearchActivity : AppCompatActivity(),
     private lateinit var searchRepositoriesAdapter: SearchAdapter
     private lateinit var searchView: SearchView
 
-    private var searchItemList = mutableListOf<Repository>()
-    private var page = 1
-    private var searchQuery: String? = null
-    private var isLoading: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -43,9 +38,9 @@ class SearchActivity : AppCompatActivity(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(KEY_PAGE, page)
-        outState.putParcelableArrayList(KEY_SEARCH_ITEM_LIST, ArrayList(searchItemList))
-        outState.putString(KEY_QUERY, searchQuery)
+        outState.putInt(KEY_PAGE, searchPresenter.getPageCount())
+        outState.putParcelableArrayList(KEY_SEARCH_ITEM_LIST, ArrayList(searchPresenter.getRepositoryList()))
+        outState.putString(KEY_QUERY, searchPresenter.getQuery())
         super.onSaveInstanceState(outState)
     }
 
@@ -63,6 +58,8 @@ class SearchActivity : AppCompatActivity(),
 
             setIconifiedByDefault(false)
             isFocusable = true
+
+            val searchQuery = searchPresenter.getQuery()
 
             if (!searchQuery.isNullOrEmpty()) {
                 setQuery(searchQuery, false)
@@ -84,11 +81,11 @@ class SearchActivity : AppCompatActivity(),
     private fun initData(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             if (!savedInstanceState.getString(KEY_QUERY).isNullOrEmpty()) {
-                page = savedInstanceState.getInt(KEY_PAGE)
-                searchQuery = savedInstanceState.getString(KEY_QUERY)!!
-                searchItemList = savedInstanceState.getParcelableArrayList<Repository>(
-                    KEY_SEARCH_ITEM_LIST
-                )!!
+                searchPresenter.setPageCount(savedInstanceState.getInt(KEY_PAGE))
+                searchPresenter.setQuery(savedInstanceState.getString(KEY_QUERY))
+                searchPresenter.setRepositoryList(savedInstanceState.getParcelableArrayList<Repository>(
+                        KEY_SEARCH_ITEM_LIST
+                )!!)
             }
             return
         }
@@ -97,7 +94,7 @@ class SearchActivity : AppCompatActivity(),
     private fun initUserInterface() {
         searchRepositoriesRecyclerView =
             findViewById(R.id.activity_search_repositories_recyclerview)
-        searchRepositoriesAdapter = SearchAdapter(searchItemList,
+        searchRepositoriesAdapter = SearchAdapter(searchPresenter.getRepositoryList(),
             avatarClickAction = { showProfile(it) },
             repositoryInfoClickAction = { showRepository(it) })
         searchRepositoriesRecyclerView.adapter = searchRepositoriesAdapter
@@ -111,11 +108,9 @@ class SearchActivity : AppCompatActivity(),
 
                 val linearLayoutManager =
                     searchRepositoriesRecyclerView.layoutManager as LinearLayoutManager
-                if (!isLoading && !searchItemList.isNullOrEmpty()) {
-                    if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == searchItemList.size - 1) {
-                        val pageCount = page + 1
-                        searchPresenter.getSearchResults(searchQuery!!, pageCount.toString())
-                        isLoading = true
+                if (!searchPresenter.isLoading() && !searchRepositoriesAdapter.repositoryList.isNullOrEmpty()) {
+                    if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == searchRepositoriesAdapter.repositoryList.size - 1) {
+                        searchPresenter.getQueryNewPageSearchResults()
                     }
                 }
             }
@@ -123,15 +118,8 @@ class SearchActivity : AppCompatActivity(),
     }
 
     override fun displaySearchResults(repositoryList: List<Repository>?) {
-        if (page == 1) {
-            this.searchItemList.clear()
-        }
-        repositoryList?.let {
-            this.searchItemList.addAll(it)
-            searchRepositoriesAdapter.notifyDataSetChanged()
-            isLoading = false
-            page++
-        }
+        searchRepositoriesAdapter.repositoryList = repositoryList!!
+        searchRepositoriesAdapter.notifyDataSetChanged()
     }
 
     override fun displayMessage(message: String) {
@@ -139,22 +127,19 @@ class SearchActivity : AppCompatActivity(),
     }
 
     override fun displayError(errorMessage: String) {
-        isLoading = false
         displayMessage(errorMessage)
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText.isNullOrEmpty()) {
-            clearSearchResults()
+            searchPresenter.clearSearchResults()
         }
 
         return false
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        this.searchQuery = query
-        this.page = 1
-        searchPresenter.getSearchResults(query, page.toString())
+        searchPresenter.getNewQuerySearchResults(query)
         return false
     }
 
@@ -164,13 +149,5 @@ class SearchActivity : AppCompatActivity(),
 
     private fun showRepository(repository: Repository) {
         startActivity(RepositoryActivity.newIntent(this, repository))
-    }
-
-    private fun clearSearchResults() {
-        searchItemList.clear()
-        page = 1
-        searchQuery = null
-        isLoading = false
-        searchRepositoriesAdapter.notifyDataSetChanged()
     }
 }

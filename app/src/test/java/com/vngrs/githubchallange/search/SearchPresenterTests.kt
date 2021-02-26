@@ -41,9 +41,9 @@ class SearchPresenterTests : BaseTest() {
         val dummySearchResponse = dummySearchResponse
         val searchDummyList = dummySearchList
         Mockito.doReturn(Observable.just(dummySearchResponse)).`when`(mockDataSource)
-            .searchResultsObservable(anyString(), "3")
+            .searchResultsObservable(anyString(), anyString())
 
-        searchPresenter.getSearchResults("s", "3")
+        searchPresenter.getNewQuerySearchResults("fresco")
 
         Mockito.verify(mockActivity).displaySearchResults(searchDummyList)
     }
@@ -52,9 +52,9 @@ class SearchPresenterTests : BaseTest() {
     fun testSearchRepositoryError() {
         Mockito.doReturn(
             Observable.error<Throwable>(Throwable("Something went wrong"))
-        ).`when`(mockDataSource).searchResultsObservable(anyString(), "3")
+        ).`when`(mockDataSource).searchResultsObservable(anyString(), anyString())
 
-        searchPresenter.getSearchResults("Art", "3")
+        searchPresenter.getNewQuerySearchResults("Art")
         Mockito.verify(mockActivity).displayError("Error fetching search data")
     }
 
